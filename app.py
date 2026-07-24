@@ -52,7 +52,7 @@ with tab1:
     
     if bmi < 18.5: bmi_status = "نحيف (Underweight)"
     elif bmi < 25: bmi_status = "وزن طبيعي (Normal)"
-    elif bmi < 30: bmi_status, st_color = "زيادة وزن (Overweight)", "warning"
+    elif bmi < 30: bmi_status = "زيادة وزن (Overweight)"
     else: bmi_status = "سمنة مفرطة (Obese - تنبيب صعب محتمل)"
 
     st.markdown(f'''
@@ -87,60 +87,103 @@ with tab2:
     
     drugs_db = {
         "Propofol (بروبوفول)": {
-            "generic": "Propofol",
-            "trade": "Diprivan, Fresofol",
-            "class": "Intravenous Sedative / Hypnotic",
+            "generic": "Propofol", "trade": "Diprivan, Fresofol", "class": "Intravenous Sedative / Hypnotic",
             "total_amount": 200, "ampoule_ml": 20, "default_dose": 2.0, "unit": "mg",
-            "pediatric_dose": "2.5 - 3.5 mg/kg (للإحداث)",
-            "route": "Intravenous (IV) Bolus / Infusion",
-            "mechanism": "يعمل عن طريق تعزيز تأثير الناقل العصبي المثبط GABA في الدماغ.",
-            "onset": "30 - 45 ثانية", "duration": "5 - 10 دقائق", "half_life": "1.5 - 3 ساعات (تخلص نهائي)",
+            "pediatric_dose": "2.5 - 3.5 mg/kg (للإحداث)", "route": "Intravenous (IV) Bolus / Infusion",
+            "mechanism": "تعزيز تأثير الناقل العصبي المثبط GABA في الدماغ.",
+            "onset": "30 - 45 ثانية", "duration": "5 - 10 دقائق", "half_life": "1.5 - 3 ساعات",
             "contraindications": "حساسية من الصويا أو البيض، هبوط حاد غير مصلح في ضغط الدم.",
-            "side_effects": "هبوط ضغط الدم، توسع الأوعية الدموية، ألم في مكان الحقن، تثبيط التنفس.",
-            "interactions": "يزيد تأثير الأدوية المثبطة للجهاز العصبي المركزي (المخدرات، الأفيونات).",
-            "storage": "يحفظ في درجة حرارة الغرفة (لا يمجّمد)، ويستخدم خلال ساعات من الفتح."
+            "side_effects": "هبوط ضغط الدم، توسع الأوعية الدموية، ألم في مكان الحقن.",
+            "interactions": "يزيد تأثير الأدوية المثبطة للجهاز العصبي المركزي.",
+            "storage": "يحفظ في درجة حرارة الغرفة ولا يجمد."
         },
-        "Fentanyl (فينتانيل)": {
-            "generic": "Fentanyl Citrate",
-            "trade": "Sublimaze",
-            "class": "Opioid Analgesic",
-            "total_amount": 500, "ampoule_ml": 10, "default_dose": 1.5, "unit": "mcg",
-            "pediatric_dose": "1 - 2 mcg/kg",
-            "route": "Intravenous (IV) / Epidural",
-            "mechanism": "يرتبط بمستقبلات الأفيون (Mu-opioid receptors) في الجهاز العصبي المركزي لمنع إشارات الألم.",
-            "onset": "1 - 2 دقائق", "duration": "30 - 60 دقيقة", "half_life": "2 - 4 ساعات",
-            "contraindications": "القصور التنفسي الحاد، الحساسية المفرطة للمركب.",
-            "side_effects": "توقف التنفس، بطء القلب، تصلب جدار الصدر (Chest rigidity) عند الحقن السريع.",
-            "interactions": "يثبط التنفس بشدة مع المهدئات والباربيجورات.",
-            "storage": "يحفظ في مكان مظلم وبارد، ويخضع لرقابة الأدوية المخدرة."
+        "Thiopental (ثيوبنتال)": {
+            "generic": "Thiopental Sodium", "trade": "Pentothal", "class": "Barbiturate Anesthetic",
+            "total_amount": 500, "ampoule_ml": 20, "default_dose": 4.0, "unit": "mg",
+            "pediatric_dose": "5 - 6 mg/kg", "route": "Intravenous (IV) Bolus",
+            "mechanism": "تثبيط التوصيل العصبي الشبكي وزيادة تأثير GABA.",
+            "onset": "30 ثانية", "duration": "5 - 10 دقائق", "half_life": "5 - 11 ساعة",
+            "contraindications": "مرض البورفيريا الحاد (Porphyria)، انخفاض ضغط الدم الشديد.",
+            "side_effects": "هبوط حاد بالضغط، تثبيط تنفسي، تقرحات شديدة عند الحقن خارج العرق.",
+            "interactions": "يتفاعل مع مسكنات الأفيون مسبباً هبوطاً مضاعفاً.",
+            "storage": "يحفظ على شكل بودرة ويحلل قبل الاستخدام مباشرة."
+        },
+        "Etomidate (إيتوميدات)": {
+            "generic": "Etomidate", "trade": "Amidate", "class": "Carboxylated Imidazole (Hypnotic)",
+            "total_amount": 20, "ampoule_ml": 10, "default_dose": 0.25, "unit": "mg",
+            "pediatric_dose": "0.2 - 0.3 mg/kg", "route": "Intravenous (IV) Bolus",
+            "mechanism": "منوم سريع يعمل على مستقبلات GABA بدون تأثير أفيوني أو مسكن.",
+            "onset": "30 - 60 ثانية", "duration": "3 - 5 دقائق", "half_life": "2.5 - 5 ساعات",
+            "contraindications": "فرط الحساسية، تثبيط قشرة الكظر المزمن (في التسريب الطويل).",
+            "side_effects": "رعشة عضلية مؤقتة (Myoclonus)، ألم في مكان الحقن، تثبيط مؤقت للكورتيزول.",
+            "interactions": "يزيد تأثيره مع المهديات العصبية.",
+            "storage": "يحفظ في درجة حرارة الغرفة بعيداً عن الضوء."
         },
         "Ketamine (كيتامين)": {
-            "generic": "Ketamine Hydrochloride",
-            "trade": "Ketalar",
-            "class": "Dissociative Anesthetic",
+            "generic": "Ketamine Hydrochloride", "trade": "Ketalar", "class": "Dissociative Anesthetic",
             "total_amount": 500, "ampoule_ml": 10, "default_dose": 1.5, "unit": "mg",
-            "pediatric_dose": "1 - 2 mg/kg (IV) أو 4 - 5 mg/kg (IM)",
-            "route": "Intravenous (IV) / Intramuscular (IM)",
-            "mechanism": "مستقبلات NMDA antagonist، يسبب انفصال الوظائف العصبية مع الحفاظ على التنفس والبلع.",
+            "pediatric_dose": "1 - 2 mg/kg (IV) أو 4 - 5 mg/kg (IM)", "route": "Intravenous / Intramuscular",
+            "mechanism": "مستقبلات NMDA antagonist، يسبب انفصال الوظائف العصبية.",
             "onset": "45 - 60 ثانية", "duration": "10 - 20 دقيقة", "half_life": "2 - 3 ساعات",
-            "contraindications": "ارتفاع ضغط الدم الشديد، أمراض الشريان التاجي، ارتفاع ضغط الدماغ أو العين.",
-            "side_effects": "ارتفاع ضغط الدم، زيادة نبض القلب (Tachycardia)، هلوسة وأحلام مزعجة عند الاستيقاظ.",
+            "contraindications": "ارتفاع ضغط الدم الشديد، أمراض الشريان التاجي، ارتفاع ضغط الدماغ.",
+            "side_effects": "ارتفاع ضغط الدم، زيادة نبض القلب، هلوسة عند الاستيقاظ.",
             "interactions": "يتفاعل مع أدوية الغدة الدرقية مسبباً ارتفاعاً خطيراً بالضغط.",
             "storage": "يحفظ بعيداً عن الضوء في درجات الحرارة العادية."
         },
+        "Midazolam (ميدازولام)": {
+            "generic": "Midazolam", "trade": "Versed", "class": "Benzodiazepine",
+            "total_amount": 15, "ampoule_ml": 3, "default_dose": 0.05, "unit": "mg",
+            "pediatric_dose": "0.05 - 0.1 mg/kg", "route": "Intravenous / Intramuscular / Oral",
+            "mechanism": "يزيد تدفق اï¯ïي‍‍ ions الكلور عبر مستقبلات GABA-A.",
+            "onset": "1 - 3 دقائق", "duration": "30 - 60 دقيقة", "half_life": "1.5 - 2.5 ساعة",
+            "contraindications": "الجلوكوما زاوية الإغلاق الحادة، التثبيط التنفسي الحاد.",
+            "side_effects": "نعاس طويل، هبوط خفيف بالضغط، ضعف الذاكرة المؤقت (Amnesia).",
+            "interactions": "تزداد خطورة تثبيط التنفس عند خلطه مع الأفيونات.",
+            "storage": "يحفظ في مكان بارد ومظلم."
+        },
+        "Fentanyl (فينتانيل)": {
+            "generic": "Fentanyl Citrate", "trade": "Sublimaze", "class": "Opioid Analgesic",
+            "total_amount": 500, "ampoule_ml": 10, "default_dose": 1.5, "unit": "mcg",
+            "pediatric_dose": "1 - 2 mcg/kg", "route": "Intravenous (IV) / Epidural",
+            "mechanism": "يرتبط بمستقبلات الأفيون (Mu-opioid receptors) في الجهاز العصبي المركزي.",
+            "onset": "1 - 2 دقائق", "duration": "30 - 60 دقيقة", "half_life": "2 - 4 ساعات",
+            "contraindications": "القصور التنفسي الحاد، الحساسية المفرطة للمركب.",
+            "side_effects": "توقف التنفس، بطء القلب، تصلب جدار الصدر عند الحقن السريع.",
+            "interactions": "يثبط التنفس بشدة مع المهدئات.",
+            "storage": "يحفظ في مكان مظلم وبارد وتحت الرقابة."
+        },
+        "Succinylcholine (سكسنيل كولين)": {
+            "generic": "Succinylcholine Chloride", "trade": "Anectine", "class": "Depolarizing Neuromuscular Blocker",
+            "total_amount": 100, "ampoule_ml": 2, "default_dose": 1.0, "unit": "mg",
+            "pediatric_dose": "1.5 - 2 mg/kg", "route": "Intravenous (IV) Bolus",
+            "mechanism": "يحاكي الأسيتيل كولين مسبباً إزالة استقطاب مستمرة وعجز عضلي سريع.",
+            "onset": "30 - 60 ثانية", "duration": "4 - 6 دقائق", "half_life": "قصير جداً (دقائق معدودة)",
+            "contraindications": "مرضى الحروق المتقدمة، ارتفاع بوتاسيوم الدم، تاريخ عائلي لفرط الحرارة الخبيث.",
+            "side_effects": "ارتفاع البوتاسيوم بالدم، آلام عضلية بعد الإفاقة، ارتفاع حرارة خبيث.",
+            "interactions": "تتداخل أدوية الفوسفور العضوي لزيادة مدة تأثيره.",
+            "storage": "يحفظ حصراً في الثلاجة (2-8 درجات مئوية)."
+        },
         "Rocuronium (روكورونيوم)": {
-            "generic": "Rocuronium Bromide",
-            "trade": "Esmeron",
-            "class": "Non-depolarizing Neuromuscular Blocker",
+            "generic": "Rocuronium Bromide", "trade": "Esmeron", "class": "Non-depolarizing Neuromuscular Blocker",
             "total_amount": 50, "ampoule_ml": 5, "default_dose": 0.6, "unit": "mg",
-            "pediatric_dose": "0.6 mg/kg",
-            "route": "Intravenous (IV) Bolus",
-            "mechanism": "ينافس الأسيتيل كولين على مستقبلات العضلات الهيكلية لمنع التقلص العضلي.",
+            "pediatric_dose": "0.6 mg/kg", "route": "Intravenous (IV) Bolus",
+            "mechanism": "منافسة الأسيتيل كولين على مستقبلات العضلات الهيكلية لمنع التقلص.",
             "onset": "60 - 90 ثانية", "duration": "30 - 40 دقيقة", "half_life": "1 - 2 ساعة",
-            "contraindications": "فرط الحساسية للمادة، صعوبة مجرى الهواء المتوقعة غير المحمولة.",
+            "contraindications": "فرط الحساسية للمادة.",
             "side_effects": "ردود فعل تحسسية نادرة، ارتفاع طفيف بمعدل ضربات القلب.",
-            "interactions": "تطيل أمد تأثيره المضادات الحيوية (مثل Aminoglycosides) وبعض أدوية القلب.",
+            "interactions": "تطيل أمد تأثيره المضادات الحيوية (Aminoglycosides).",
             "storage": "يحفظ في الثلاجة (2-8 درجات مئوية)."
+        },
+        "Atracurium (أتراكوريوم)": {
+            "generic": "Atracurium Besylate", "trade": "Tracrium", "class": "Non-depolarizing Neuromuscular Blocker",
+            "total_amount": 50, "ampoule_ml": 5, "default_dose": 0.5, "unit": "mg",
+            "pediatric_dose": "0.4 - 0.5 mg/kg", "route": "Intravenous (IV) Bolus",
+            "mechanism": "يحصر مستقبلات الأسيتيل كولين ويتحلل ذاتياً في الدم (Hofmann elimination).",
+            "onset": "2 - 3 دقائق", "duration": "20 - 35 دقيقة", "half_life": "20 دقيقة",
+            "contraindications": "فرط الحساسية للمادة.",
+            "side_effects": "تحرير الهيستامين، احمرار خفيف بالجلد، هبوط خفيف مؤقت بالضغط.",
+            "interactions": "يتأثر بالوسط الحامضي والقاعدي للمحاليل الوريدية.",
+            "storage": "يحفظ في الثلاجة حصراً لتجنب تلفه."
         }
     }
 
@@ -149,7 +192,6 @@ with tab2:
     is_mcg = d["unit"] == "mcg"
     unit_str = "ميكروغرام (mcg)" if is_mcg else "ملغم (mg)"
 
-    # عرض البطاقة الأكاديمية الكاملة
     st.markdown(f'''
     <div class="card-box">
         <h3>📖 البطاقة الأكاديمية: {selected_drug}</h3>
