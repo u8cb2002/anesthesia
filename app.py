@@ -175,7 +175,7 @@ with tab2:
             "contraindications": "فرط الحساسية للمادة.",
             "side_effects": "ردود فعل تحسسية نادرة، ارتفاع طفيف بمعدل ضربات القلب.",
             "interactions": "تطيل أمد تأثيره المضادات الحيوية (Aminoglycosides).",
-            "storage": "يحفظ في الثلاجة حصراً لتجنب تلفه."
+            "storage": "يحفظ في الثلاجة (2-8 درجات مئوية)."
         },
         "Atracurium (أتراكوريوم)": {
             "generic": "Atracurium Besylate", "trade": "Tracrium", "class": "Non-depolarizing Neuromuscular Blocker",
@@ -384,8 +384,20 @@ with tab8:
             st.warning("الرجاء كتابة سؤال أو رفع صورة على الأقل.")
         else:
             try:
-                # استخدام SDK الحديث google-genai
+                # استخدام SDK الحديث للوصول للنماذج الحية المتاحة لمفتاحك تلقائياً
                 client = genai.Client(api_key=api_key_input)
+
+                # استعلام ديناميكي عن النماذج المتاحة في حسابك لتفادي خطأ 404
+                available_models = [m.name for m in client.models.list() if 'generateContent' in m.supported_actions]
+                
+                # اختيار أحدث نموذج متاح في حسابك مجاناً
+                target_model = None
+                for name in available_models:
+                    if 'flash' in name:
+                        target_model = name
+                        break
+                if not target_model and available_models:
+                    target_model = available_models[0]
 
                 system_instruction = (
                     "أنت مساعد ذكي ومحترف متخصص حصراً في مجال التخدير، العناية المركزة، والإنعاش الطبي. "
@@ -400,7 +412,7 @@ with tab8:
 
                 with st.spinner("جاري تحليل الطلب بواسطة الذكاء الاصطناعي..."):
                     response = client.models.generate_content(
-                        model='gemini-2.5-flash',
+                        model=target_model,
                         contents=contents,
                     )
                     st.markdown("### 💡 الإجابة والتحليل:")
