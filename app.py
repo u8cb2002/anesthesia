@@ -1,6 +1,6 @@
 import streamlit as st
 from PIL import Image
-from google import genai
+import google.generativeai as genai
 
 st.set_page_config(page_title="المساعد الشامل للتخدير 💉", page_icon="👨‍⚕️", layout="centered")
 
@@ -175,7 +175,7 @@ with tab2:
             "contraindications": "فرط الحساسية للمادة.",
             "side_effects": "ردود فعل تحسسية نادرة، ارتفاع طفيف بمعدل ضربات القلب.",
             "interactions": "تطيل أمد تأثيره المضادات الحيوية (Aminoglycosides).",
-            "storage": "يحفظ في الثلاجة (2-8 درجات مئوية)."
+            "storage": "يحفظ في الثلاجة حصراً لتجنب تلفه."
         },
         "Atracurium (أتراكوريوم)": {
             "generic": "Atracurium Besylate", "trade": "Tracrium", "class": "Non-depolarizing Neuromuscular Blocker",
@@ -384,21 +384,11 @@ with tab8:
             st.warning("الرجاء كتابة سؤال أو رفع صورة على الأقل.")
         else:
             try:
+                # التهيئة الصحيحة المباشرة المعتمدة لمكتبة google.generativeai
                 genai.configure(api_key=api_key_input)
                 
-                # جلب النماذج المتاحة لمفتاحك وتفعيل أحدث نموذج متوفر تلقائياً
-                all_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
-                
-                # البحث عن نموذج يعمل
-                selected_model = None
-                for m in all_models:
-                    if 'flash' in m:
-                        selected_model = m
-                        break
-                if not selected_model and all_models:
-                    selected_model = all_models[0]
-
-                model = genai.GenerativeModel(selected_model)
+                # استخدام النموذج الافتراضي المستقر والأسرع للتواصل
+                model = genai.GenerativeModel('gemini-1.5-flash-latest')
 
                 system_instruction = (
                     "أنت مساعد ذكي ومحترف متخصص حصراً في مجال التخدير، العناية المركزة، والإنعاش الطبي. "
@@ -411,10 +401,13 @@ with tab8:
                 if uploaded_image is not None:
                     prompt_parts.append(image)
 
-                with st.spinner(f"جاري التحليل باستخدام ({selected_model})..."):
+                with st.spinner("جاري تحليل الطلب بواسطة الذكاء الاصطناعي..."):
                     response = model.generate_content(prompt_parts)
                     st.markdown("### 💡 الإجابة والتحليل:")
                     st.success(response.text)
 
             except Exception as e:
                 st.error(f"حدث خطأ أثناء الاتصال بالذكاء الاصطناعي: {e}")
+
+st.markdown("---")
+st.caption("إخلاء مسؤولية طبية: هذا التطبيق تعليمي ولا يعتبر بديلاً عن القرار السريري في صالة العمليات.")
