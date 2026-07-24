@@ -1,4 +1,6 @@
 import streamlit as st
+from PIL import Image
+import google.generativeai as genai
 
 st.set_page_config(page_title="المساعد الشامل للتخدير 💉", page_icon="👨‍⚕️", layout="centered")
 
@@ -16,15 +18,16 @@ st.markdown('''
 st.title("المساعد الشامل لطبيب التخدير 👨‍⚕️💉")
 st.markdown("منصتك الأكاديمية والعملية المعتمدة في صالة العمليات.")
 
-# --- TABS (7 Tabs) ---
-tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
+# --- TABS (8 Tabs) ---
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
     "📋 التقييم قبل التخدير", 
-    "💊 موسوعة الأدوية الشاملة", 
+    "💊 موسوعة الأدوية", 
     "🚨 الطوارئ", 
     "💧 السوائل", 
     "🫁 مجرى الهواء", 
     "👶 الأطفال", 
-    "⚙️ حاسبة TIVA"
+    "⚙️ حاسبة TIVA",
+    "🤖 مساعد التخدير الذكي"
 ])
 
 # ==========================================
@@ -134,7 +137,7 @@ with tab2:
             "generic": "Midazolam", "trade": "Versed", "class": "Benzodiazepine",
             "total_amount": 15, "ampoule_ml": 3, "default_dose": 0.05, "unit": "mg",
             "pediatric_dose": "0.05 - 0.1 mg/kg", "route": "Intravenous / Intramuscular / Oral",
-            "mechanism": "يزيد تدفق اï¯ïي‍‍ ions الكلور عبر مستقبلات GABA-A.",
+            "mechanism": "يزيد تدفق أيونات الكلور عبر مستقبلات GABA-A.",
             "onset": "1 - 3 دقائق", "duration": "30 - 60 دقيقة", "half_life": "1.5 - 2.5 ساعة",
             "contraindications": "الجلوكوما زاوية الإغلاق الحادة، التثبيط التنفسي الحاد.",
             "side_effects": "نعاس طويل، هبوط خفيف بالضغط، ضعف الذاكرة المؤقت (Amnesia).",
@@ -356,6 +359,55 @@ with tab7:
             <h2>{pump_rate:.1f} ml / hr</h2>
         </div>
         ''', unsafe_allow_html=True)
+
+# ==========================================
+# TAB 8: AI ANESTHESIA ASSISTANT (GEMINI)
+# ==========================================
+with tab8:
+    st.subheader("🤖 مساعد التخدير الذكي (مدعوم بـ Google Gemini)")
+    st.markdown("اسأل عن أي موضوع طبي، أو ارفع صورة (تخطيط قلب، أدوية، شاشة مراقبة) ليتم تحليلها فوراً.")
+
+    # إدخال مفتاح الـ API من قبل المستخدم أو عبر الـ Secrets
+    api_key_input = st.text_input("أدخل مفتاح Google Gemini API Key الخاص بك:", type="password")
+
+    uploaded_image = st.file_uploader("اختر صورة للتحليل (اختياري - PNG, JPG, JPEG):", type=["png", "jpg", "jpeg"])
+
+    if uploaded_image is not None:
+        image = Image.open(uploaded_image)
+        st.image(image, caption="الصورة المرفوعة للمراجعة", use_container_width=True)
+
+    user_query = st.text_area("اكتب سؤالك الطبي هنا:", placeholder="مثلاً: ما هي دواعي استعمال دواء كذا؟ أو اشرح لي هذا التخطيط...")
+
+    if st.button("إرسال للمساعد الذكي"):
+        if not api_key_input:
+            st.error("الرجاء إدخال مفتاح الـ API الخاص بـ Gemini أولاً.")
+        elif not user_query and not uploaded_image:
+            st.warning("الرجاء كتابة سؤال أو رفع صورة على الأقل.")
+        else:
+            try:
+                genai.configure(api_key=api_key_input)
+                # استخدام نموذج يدعم النصوص والصور معاً
+                model = genai.GenerativeModel('gemini-1.5-flash')
+                
+                # توجيه النظام للالتزام بمجال التخدير حصراً
+                system_instruction = (
+                    "أنت مساعد ذكي ومحترف متخصص حصراً في مجال التخدير، العناية المركزة، والإنعاش الطبي. "
+                    "يجب أن تجيب فقط على الأسئلة والاستفسارات المتعلقة بهذا المجال الطبي والأدوية والعمليات. "
+                    "إذا سأل المستخدم عن أي موضوع خارج التخدير والطب، اعتذر بلطف ورفض الإجابة. "
+                    "دائماً أضف تنبيه في نهاية إجابتك بأن هذه المعلومات تعليمية ومساعدة وليست بديلاً عن القرار السريري الطبي المباشر."
+                )
+
+                prompt_parts = [system_instruction, f"سؤال المستخدم: {user_query}"]
+                if uploaded_image is not None:
+                    prompt_parts.append(image)
+
+                with st.spinner("جاري تحليل الطلب بواسطة الذكاء الاصطناعي..."):
+                    response = model.generate_content(prompt_parts)
+                    st.markdown("### 💡 الإجابة والتحليل:")
+                    st.success(response.text)
+
+            except Exception as e:
+                st.error(f حدث خطأ أثناء الاتصال بالذكاء الاصطناعي: {e}")
 
 st.markdown("---")
 st.caption("إخلاء مسؤولية طبية: هذا التطبيق تعليمي ولا يعتبر بديلاً عن القرار السريري في صالة العمليات.")
