@@ -14,12 +14,12 @@ st.markdown('''
 ''', unsafe_allow_html=True)
 
 st.title("المساعد الشامل لطبيب التخدير 👨‍⚕️💉")
-st.markdown("تطبيقك الاحترافي والمرجع السريع في صالة العمليات.")
+st.markdown("منصتك الأكاديمية والعملية المعتمدة في صالة العمليات.")
 
 # --- TABS (7 Tabs) ---
 tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
     "📋 التقييم قبل التخدير", 
-    "💊 موسوعة وحاسبة الأدوية", 
+    "💊 موسوعة الأدوية الشاملة", 
     "🚨 الطوارئ", 
     "💧 السوائل", 
     "🫁 مجرى الهواء", 
@@ -52,7 +52,7 @@ with tab1:
     
     if bmi < 18.5: bmi_status = "نحيف (Underweight)"
     elif bmi < 25: bmi_status = "وزن طبيعي (Normal)"
-    elif bmi < 30: bmi_status = "زيادة وزن (Overweight)"
+    elif bmi < 30: bmi_status, st_color = "زيادة وزن (Overweight)", "warning"
     else: bmi_status = "سمنة مفرطة (Obese - تنبيب صعب محتمل)"
 
     st.markdown(f'''
@@ -80,98 +80,126 @@ with tab1:
         st.markdown('<div class="success-box">✅ حالة الصيام ممتازة وجاهزة للتخدير.</div>', unsafe_allow_html=True)
 
 # ==========================================
-# TAB 2: DRUGS ENCYCLOPEDIA & CALCULATOR
+# TAB 2: COMPREHENSIVE DRUGS ENCYCLOPEDIA
 # ==========================================
 with tab2:
-    st.subheader("موسوعة وحاسبة أدوية التخدير 💊")
+    st.subheader("موسوعة الأدوية الأكاديمية والشاملة 💊")
     
     drugs_db = {
         "Propofol (بروبوفول)": {
+            "generic": "Propofol",
+            "trade": "Diprivan, Fresofol",
+            "class": "Intravenous Sedative / Hypnotic",
             "total_amount": 200, "ampoule_ml": 20, "default_dose": 2.0, "unit": "mg",
-            "use": "منوم ومنجم أساسي لإحداث التخدير (Induction) والحفاظ عليه، ويستخدم في العمليات العامة واليومية.",
-            "onset": "30 - 45 ثانية", "duration": "5 - 10 دقائق", "notes": "يسبب هبوط في ضغط الدم وتوسع الأوعية وتثبيط التنفس."
+            "pediatric_dose": "2.5 - 3.5 mg/kg (للإحداث)",
+            "route": "Intravenous (IV) Bolus / Infusion",
+            "mechanism": "يعمل عن طريق تعزيز تأثير الناقل العصبي المثبط GABA في الدماغ.",
+            "onset": "30 - 45 ثانية", "duration": "5 - 10 دقائق", "half_life": "1.5 - 3 ساعات (تخلص نهائي)",
+            "contraindications": "حساسية من الصويا أو البيض، هبوط حاد غير مصلح في ضغط الدم.",
+            "side_effects": "هبوط ضغط الدم، توسع الأوعية الدموية، ألم في مكان الحقن، تثبيط التنفس.",
+            "interactions": "يزيد تأثير الأدوية المثبطة للجهاز العصبي المركزي (المخدرات، الأفيونات).",
+            "storage": "يحفظ في درجة حرارة الغرفة (لا يمجّمد)، ويستخدم خلال ساعات من الفتح."
         },
-        "Thiopental (ثيوبنتال)": {
-            "total_amount": 500, "ampoule_ml": 20, "default_dose": 4.0, "unit": "mg",
-            "use": "منوم سريع لإحداث التخدير، ويستخدم أحياناً لحالات جراحات الدماغ (حماية الدماغ).",
-            "onset": "30 ثانية", "duration": "5 - 10 دقائق", "notes": "يحذر استخدامه لمن يعانون من مرض البورفيريا (Porphyria)."
-        }, 
-        "Etomidate (إيتوميدات)": {
-            "total_amount": 20, "ampoule_ml": 10, "default_dose": 0.25, "unit": "mg",
-            "use": "منوم ممتاز وآمن جداً للمرضى الذين يعانون من مشاكل واضطرابات في القلب.",
-            "onset": "30 - 60 ثانية", "duration": "3 - 5 دقائق", "notes": "لا يسبب هبوط بالضغط، لكن قد يسبب رعشة عضلية مؤقتة."
+        "Fentanyl (فينتانيل)": {
+            "generic": "Fentanyl Citrate",
+            "trade": "Sublimaze",
+            "class": "Opioid Analgesic",
+            "total_amount": 500, "ampoule_ml": 10, "default_dose": 1.5, "unit": "mcg",
+            "pediatric_dose": "1 - 2 mcg/kg",
+            "route": "Intravenous (IV) / Epidural",
+            "mechanism": "يرتبط بمستقبلات الأفيون (Mu-opioid receptors) في الجهاز العصبي المركزي لمنع إشارات الألم.",
+            "onset": "1 - 2 دقائق", "duration": "30 - 60 دقيقة", "half_life": "2 - 4 ساعات",
+            "contraindications": "القصور التنفسي الحاد، الحساسية المفرطة للمركب.",
+            "side_effects": "توقف التنفس، بطء القلب، تصلب جدار الصدر (Chest rigidity) عند الحقن السريع.",
+            "interactions": "يثبط التنفس بشدة مع المهدئات والباربيجورات.",
+            "storage": "يحفظ في مكان مظلم وبارد، ويخضع لرقابة الأدوية المخدرة."
         },
         "Ketamine (كيتامين)": {
+            "generic": "Ketamine Hydrochloride",
+            "trade": "Ketalar",
+            "class": "Dissociative Anesthetic",
             "total_amount": 500, "ampoule_ml": 10, "default_dose": 1.5, "unit": "mg",
-            "use": "تخدير انفصالي (Dissociative)، ممتاز لمرضى الصدمة (Shock) وعمليات الأطفال السريعة وحالات الربو.",
-            "onset": "45 - 60 ثانية", "duration": "10 - 20 دقيقة", "notes": "يزيد نبض القلب وضغط الدم، وقد يسبب هلوسة عند الاستيقاظ."
+            "pediatric_dose": "1 - 2 mg/kg (IV) أو 4 - 5 mg/kg (IM)",
+            "route": "Intravenous (IV) / Intramuscular (IM)",
+            "mechanism": "مستقبلات NMDA antagonist، يسبب انفصال الوظائف العصبية مع الحفاظ على التنفس والبلع.",
+            "onset": "45 - 60 ثانية", "duration": "10 - 20 دقيقة", "half_life": "2 - 3 ساعات",
+            "contraindications": "ارتفاع ضغط الدم الشديد، أمراض الشريان التاجي، ارتفاع ضغط الدماغ أو العين.",
+            "side_effects": "ارتفاع ضغط الدم، زيادة نبض القلب (Tachycardia)، هلوسة وأحلام مزعجة عند الاستيقاظ.",
+            "interactions": "يتفاعل مع أدوية الغدة الدرقية مسبباً ارتفاعاً خطيراً بالضغط.",
+            "storage": "يحفظ بعيداً عن الضوء في درجات الحرارة العادية."
         },
-        "Midazolam (ميدازولام)": {
-            "total_amount": 15, "ampoule_ml": 3, "default_dose": 0.05, "unit": "mg",
-            "use": "مهدئ ومزيل للقلق (Sedative/Anxiolytic) ومضاد للتقلصات، يستخدم للتحضير قبل العملية.",
-            "onset": "1 - 3 دقائق", "duration": "30 - 60 دقيقة", "notes": "متوفر له مضاد لعكس التأثير (Flumazenil)."
-        }, 
-        "Fentanyl (فينتانيل)": {
-            "total_amount": 500, "ampoule_ml": 10, "default_dose": 1.5, "unit": "mcg",
-            "use": "مسكن ألم أفيوني قوي جداً (Opioid)، يستخدم للسيطرة على ألم الجراحة وتخدير المجرى.",
-            "onset": "1 - 2 دقائق", "duration": "30 - 60 دقيقة", "notes": "الجرعات العالية قد تسبب توقف تنفس مؤقت وتصلب جدار الصدر (Chest Rigidity)."
-        },
-        "Succinylcholine (سكسنيل كولين)": {
-            "total_amount": 100, "ampoule_ml": 2, "default_dose": 1.0, "unit": "mg",
-            "use": "مرخي عضلات مزيل للقطبية (Depolarizing NMB)، الأسرع لإرخاء العضلات في الطوارئ وRSI.",
-            "onset": "30 - 60 ثانية", "duration": "4 - 6 دقائق", "notes": "ممنوع في حالات الحروق المتقدمة وتلف الأنسجة وإصابات العضلات المزمنة."
-        }, 
         "Rocuronium (روكورونيوم)": {
+            "generic": "Rocuronium Bromide",
+            "trade": "Esmeron",
+            "class": "Non-depolarizing Neuromuscular Blocker",
             "total_amount": 50, "ampoule_ml": 5, "default_dose": 0.6, "unit": "mg",
-            "use": "مرخي عضلات غير مزيل للقطبية، يستخدم للتنبيب العادي والسريع.",
-            "onset": "60 - 90 ثانية", "duration": "30 - 40 دقيقة", "notes": "يعتبر الخيار البديل الممتاز للسكسنيل كولين."
-        },
-        "Atracurium (أتراكوريوم)": {
-            "total_amount": 50, "ampoule_ml": 5, "default_dose": 0.5, "unit": "mg",
-            "use": "مرخي عضلات غير مزيل للقطبية، ممتاز للمرضى الذين لديهم مشاكل بالكلى أو الكبد.",
-            "onset": "2 - 3 دقائق", "duration": "20 - 35 دقيقة", "notes": "قد يسبب تحرير الهيستامين واحمرار خفيف بالجلد."
+            "pediatric_dose": "0.6 mg/kg",
+            "route": "Intravenous (IV) Bolus",
+            "mechanism": "ينافس الأسيتيل كولين على مستقبلات العضلات الهيكلية لمنع التقلص العضلي.",
+            "onset": "60 - 90 ثانية", "duration": "30 - 40 دقيقة", "half_life": "1 - 2 ساعة",
+            "contraindications": "فرط الحساسية للمادة، صعوبة مجرى الهواء المتوقعة غير المحمولة.",
+            "side_effects": "ردود فعل تحسسية نادرة، ارتفاع طفيف بمعدل ضربات القلب.",
+            "interactions": "تطيل أمد تأثيره المضادات الحيوية (مثل Aminoglycosides) وبعض أدوية القلب.",
+            "storage": "يحفظ في الثلاجة (2-8 درجات مئوية)."
         }
     }
 
-    selected_drug = st.selectbox("اختر الدواء للاطلاع على بطاقته وحساب جرعته:", list(drugs_db.keys()))
-    drug_info = drugs_db[selected_drug]
-    is_mcg = drug_info["unit"] == "mcg"
+    selected_drug = st.selectbox("اختر الدواء لاستعراض بطاقته الأكاديمية الكاملة:", list(drugs_db.keys()))
+    d = drugs_db[selected_drug]
+    is_mcg = d["unit"] == "mcg"
     unit_str = "ميكروغرام (mcg)" if is_mcg else "ملغم (mg)"
 
+    # عرض البطاقة الأكاديمية الكاملة
     st.markdown(f'''
     <div class="card-box">
-        📖 <b>بطاقة معلومات الدواء:</b><br>
-        • <b>الاستخدام الطبي:</b> {drug_info['use']}<br>
-        • <b>بداية التأثير (Onset):</b> {drug_info['onset']} | <b>المدة (Duration):</b> {drug_info['duration']}<br>
-        • <b>ملاحظات سريرية:</b> {drug_info['notes']}
+        <h3>📖 البطاقة الأكاديمية: {selected_drug}</h3>
+        <hr>
+        • <b>الاسم العلمي (Generic):</b> {d['generic']}<br>
+        • <b>الاسم التجاري (Trade Name):</b> {d['trade']}<br>
+        • <b>التصنيف العلمي (Class):</b> {d['class']}<br>
+        • <b>طريقة الإعطاء (Route):</b> {d['route']}<br>
+        • <b>جرعة الأطفال (Pediatric Dose):</b> {d['pediatric_dose']}<br>
+        <br>
+        <b>⚙️ الفارماكولوجي وميكانيزم العمل:</b><br>
+        • {d['mechanism']}<br>
+        • <b>بداية التأثير (Onset):</b> {d['onset']} | <b>المدة (Duration):</b> {d['duration']}<br>
+        • <b>نصف العمر (Half-life):</b> {d['half_life']}<br>
+        <br>
+        ⚠️ <b>موانع الاستخدام (Contraindications):</b> {d['contraindications']}<br>
+        🛑 <b>الآثار الجانبية (Side Effects):</b> {d['side_effects']}<br>
+        🔄 <b>التداخلات الدوائية (Interactions):</b> {d['interactions']}<br>
+        📦 <b>كيفية الحفظ (Storage):</b> {d['storage']}
     </div>
     ''', unsafe_allow_html=True)
 
+    st.markdown("---")
+    st.subheader("🧮 حاسبة الجرعات والتخفيف السريرية")
+    
     st.markdown(f'''
     <div class="info-box">
         <b>معلومات الأمبولة القياسية:</b><br>
-        تحتوي الأمبولة على <b>{drug_info['total_amount']} {unit_str}</b> في حجم <b>{drug_info['ampoule_ml']} مل (cc)</b>.<br>
-        التركيز الأصلي: <b>{drug_info['total_amount'] / drug_info['ampoule_ml']:.1f} {unit_str} / مل</b>.
+        تحتوي الأمبولة على <b>{d['total_amount']} {unit_str}</b> في حجم <b>{d['ampoule_ml']} مل (cc)</b>.<br>
+        التركيز الأصلي: <b>{d['total_amount'] / d['ampoule_ml']:.1f} {unit_str} / مل</b>.
     </div>
     ''', unsafe_allow_html=True)
 
     dilute_checkbox = st.checkbox("تفعيل ميزة التخفيف بالنورمل سلاين")
-    final_volume = drug_info['ampoule_ml']
+    final_volume = d['ampoule_ml']
 
     if dilute_checkbox:
         added_saline = st.number_input("حجم النورمل سلاين المضاف (ml):", min_value=0.0, value=0.0, step=1.0)
-        final_volume = drug_info['ampoule_ml'] + added_saline
-        st.markdown(f'<div class="success-box">التركيز بعد التخفيف أصبح: <b>{drug_info["total_amount"] / final_volume:.1f} {unit_str} / مل</b> (بحجم كلي {final_volume} مل).</div>', unsafe_allow_html=True)
+        final_volume = d['ampoule_ml'] + added_saline
+        st.markdown(f'<div class="success-box">التركيز بعد التخفيف أصبح: <b>{d["total_amount"] / final_volume:.1f} {unit_str} / مل</b> (بحجم كلي {final_volume} مل).</div>', unsafe_allow_html=True)
 
-    custom_dose = st.number_input(f"الجرعة المطلوبة ({drug_info['unit']}/kg):", min_value=0.01, value=float(drug_info['default_dose']), step=0.1)
+    custom_dose = st.number_input(f"الجرعة المطلوبة ({d['unit']}/kg):", min_value=0.01, value=float(d['default_dose']), step=0.1)
 
-    if st.button("احسب جرعة التخدير المطلوبة"):
+    if st.button("احسب الجرعة وكمية الحقن"):
         required_amount = custom_dose * weight
-        concentration_per_ml = drug_info['total_amount'] / final_volume
+        concentration_per_ml = d['total_amount'] / final_volume
         required_ml = required_amount / concentration_per_ml
         
         st.success(f"الجرعة المطلوبة للوزن ({weight} كغم): **{required_amount:.1f} {unit_str}**")
-        st.info(f"👉 يجب إعطاء **{required_ml:.1f} مل (cc)** من السرنجة.")
+        st.info(f"👉 يجب إعطاء **{required_ml:.1f} مل (cc)** من السرنجة بدقة.")
 
 # ==========================================
 # TAB 3: EMERGENCY DRUGS
