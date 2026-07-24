@@ -1,6 +1,6 @@
 import streamlit as st
 from PIL import Image
-import google.generativeai as genai
+from google import genai
 
 st.set_page_config(page_title="المساعد الشامل للتخدير 💉", page_icon="👨‍⚕️", layout="centered")
 
@@ -379,26 +379,13 @@ with tab8:
 
     if st.button("إرسال للمساعد الذكي"):
         if not api_key_input:
-            st.error("الرجاء إدخل مفتاح الـ API الخاص بـ Gemini أولاً.")
+            st.error("الرجاء إدخال مفتاح الـ API الخاص بـ Gemini أولاً.")
         elif not user_query and not uploaded_image:
             st.warning("الرجاء كتابة سؤال أو رفع صورة على الأقل.")
         else:
             try:
-                genai.configure(api_key=api_key_input)
-                
-                # تجربة النماذج المتاحة تلقائياً لتفادي أخطاء 404
-                available_models = ['gemini-1.5-flash-latest', 'gemini-1.5-flash', 'gemini-pro']
-                model = None
-                
-                for model_name in available_models:
-                    try:
-                        model = genai.GenerativeModel(model_name)
-                        break
-                    except:
-                        continue
-                
-                if not model:
-                    model = genai.GenerativeModel('gemini-1.5-flash-latest')
+                # استخدام الحزمة المحدثة والرسمية google-genai
+                client = genai.Client(api_key=api_key_input)
 
                 system_instruction = (
                     "أنت مساعد ذكي ومحترف متخصص حصراً في مجال التخدير، العناية المركزة، والإنعاش الطبي. "
@@ -407,12 +394,15 @@ with tab8:
                     "دائماً أضف تنبيه في نهاية إجابتك بأن هذه المعلومات تعليمية ومساعدة وليست بديلاً عن القرار السريري الطبي المباشر."
                 )
 
-                prompt_parts = [system_instruction, f"سؤال المستخدم: {user_query}"]
+                contents = [system_instruction, f"سؤال المستخدم: {user_query}"]
                 if uploaded_image is not None:
-                    prompt_parts.append(image)
+                    contents.append(image)
 
                 with st.spinner("جاري تحليل الطلب بواسطة الذكاء الاصطناعي..."):
-                    response = model.generate_content(prompt_parts)
+                    response = client.models.generate_content(
+                        model='gemini-2.5-flash',
+                        contents=contents,
+                    )
                     st.markdown("### 💡 الإجابة والتحليل:")
                     st.success(response.text)
 
