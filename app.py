@@ -1,6 +1,6 @@
 import streamlit as st
 from PIL import Image
-from google import genai
+import google.generativeai as genai
 
 st.set_page_config(page_title="المساعد الشامل للتخدير 💉", page_icon="👨‍⚕️", layout="centered")
 
@@ -379,14 +379,17 @@ with tab8:
 
     if st.button("إرسال للمساعد الذكي"):
         if not api_key_input:
-            st.error("الرجاء إدخال مفتاح الـ API الخاص بـ Gemini أولاً.")
+            st.error("الرجاء إدخل مفتاح الـ API الخاص بـ Gemini أولاً.")
         elif not user_query and not uploaded_image:
             st.warning("الرجاء كتابة سؤال أو رفع صورة على الأقل.")
         else:
             try:
-                # استخدام الحزمة المحدثة والرسمية google-genai
-                client = genai.Client(api_key=api_key_input)
-
+                genai.configure(api_key=api_key_input)
+                
+                # كود محصن يختبر عدة نماذج تلقائياً ويختار الفعال منها بدون إظهار أخطاء
+                models_to_try = ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-pro']
+                response = None
+                
                 system_instruction = (
                     "أنت مساعد ذكي ومحترف متخصص حصراً في مجال التخدير، العناية المركزة، والإنعاش الطبي. "
                     "يجب أن تجيب فقط على الأسئلة والاستفسارات المتعلقة بهذا المجال الطبي والأدوية والعمليات. "
@@ -394,17 +397,26 @@ with tab8:
                     "دائماً أضف تنبيه في نهاية إجابتك بأن هذه المعلومات تعليمية ومساعدة وليست بديلاً عن القرار السريري الطبي المباشر."
                 )
 
-                contents = [system_instruction, f"سؤال المستخدم: {user_query}"]
+                prompt_parts = [system_instruction, f"سؤال المستخدم: {user_query}"]
                 if uploaded_image is not None:
-                    contents.append(image)
+                    prompt_parts.append(image)
 
                 with st.spinner("جاري تحليل الطلب بواسطة الذكاء الاصطناعي..."):
-                    response = client.models.generate_content(
-                        model='gemini-2.5-flash',
-                        contents=contents,
-                    )
-                    st.markdown("### 💡 الإجابة والتحليل:")
-                    st.success(response.text)
+                    last_exception = None
+                    for m_name in models_to_try:
+                        try:
+                            model = genai.GenerativeModel(m_name)
+                            response = model.generate_content(prompt_parts)
+                            break
+                        except Exception as ex:
+                            last_exception = ex
+                            continue
+                    
+                    if response and response.text:
+                        st.markdown("### 💡 الإجابة والتحليل:")
+                        st.success(response.text)
+                    else:
+                        raise last_exception
 
             except Exception as e:
                 st.error(f"حدث خطأ أثناء الاتصال بالذكاء الاصطناعي: {e}")
