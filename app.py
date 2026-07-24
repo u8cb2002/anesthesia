@@ -9,16 +9,17 @@ st.markdown('''
     .success-box { background-color: #e8f5e9; color: #000000; padding: 15px; border-radius: 10px; border-left: 5px solid #4CAF50; margin-bottom: 15px; }
     .warning-box { background-color: #fff3e0; color: #000000; padding: 15px; border-radius: 10px; border-left: 5px solid #ff9800; margin-bottom: 15px; }
     .danger-box { background-color: #ffebee; color: #000000; padding: 15px; border-radius: 10px; border-left: 5px solid #f44336; margin-bottom: 15px; }
+    .card-box { background-color: #f8f9fa; color: #000000; padding: 15px; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 15px; }
 </style>
 ''', unsafe_allow_html=True)
 
 st.title("المساعد الشامل لطبيب التخدير 👨‍⚕️💉")
-st.markdown("تطبيقك الاحترافي والمتكامل لإدارة التخدير في صالة العمليات.")
+st.markdown("تطبيقك الاحترافي والمرجع السريع في صالة العمليات.")
 
 # --- TABS (7 Tabs) ---
 tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
     "📋 التقييم قبل التخدير", 
-    "💊 أدوية التخدير", 
+    "💊 موسوعة وحاسبة الأدوية", 
     "🚨 الطوارئ", 
     "💧 السوائل", 
     "🫁 مجرى الهواء", 
@@ -27,7 +28,7 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
 ])
 
 # ==========================================
-# TAB 1: PRE-ANESTHESIA ASSESSMENT (التقييم)
+# TAB 1: PRE-ANESTHESIA ASSESSMENT
 # ==========================================
 with tab1:
     st.subheader("التقييم ما قبل التخدير 📋")
@@ -46,7 +47,6 @@ with tab1:
             "ASA V - مريض ميؤوس من شفائه"
         ])
 
-    # BMI Calculation
     height_m = height / 100.0
     bmi = weight / (height_m ** 2)
     
@@ -80,27 +80,73 @@ with tab1:
         st.markdown('<div class="success-box">✅ حالة الصيام ممتازة وجاهزة للتخدير.</div>', unsafe_allow_html=True)
 
 # ==========================================
-# TAB 2: ANESTHESIA DRUGS
+# TAB 2: DRUGS ENCYCLOPEDIA & CALCULATOR
 # ==========================================
 with tab2:
-    st.subheader("حاسبة أدوية التخدير والتخفيف 💊")
+    st.subheader("موسوعة وحاسبة أدوية التخدير 💊")
     
     drugs_db = {
-        "Propofol (بروبوفول)": {"total_amount": 200, "ampoule_ml": 20, "default_dose": 2.0, "unit": "mg"},
-        "Thiopental (ثيوبنتال)": {"total_amount": 500, "ampoule_ml": 20, "default_dose": 4.0, "unit": "mg"}, 
-        "Etomidate (إيتوميدات)": {"total_amount": 20, "ampoule_ml": 10, "default_dose": 0.25, "unit": "mg"},
-        "Ketamine (كيتامين)": {"total_amount": 500, "ampoule_ml": 10, "default_dose": 1.5, "unit": "mg"},
-        "Midazolam (ميدازولام)": {"total_amount": 15, "ampoule_ml": 3, "default_dose": 0.05, "unit": "mg"}, 
-        "Fentanyl (فينتانيل)": {"total_amount": 500, "ampoule_ml": 10, "default_dose": 1.5, "unit": "mcg"},
-        "Succinylcholine (سكسنيل كولين)": {"total_amount": 100, "ampoule_ml": 2, "default_dose": 1.0, "unit": "mg"}, 
-        "Rocuronium (روكورونيوم)": {"total_amount": 50, "ampoule_ml": 5, "default_dose": 0.6, "unit": "mg"},
-        "Atracurium (أتراكوريوم)": {"total_amount": 50, "ampoule_ml": 5, "default_dose": 0.5, "unit": "mg"}
+        "Propofol (بروبوفول)": {
+            "total_amount": 200, "ampoule_ml": 20, "default_dose": 2.0, "unit": "mg",
+            "use": "منوم ومنجم أساسي لإحداث التخدير (Induction) والحفاظ عليه، ويستخدم في العمليات العامة واليومية.",
+            "onset": "30 - 45 ثانية", "duration": "5 - 10 دقائق", "notes": "يسبب هبوط في ضغط الدم وتوسع血管 وتثبيط التنفس."
+        },
+        "Thiopental (ثيوبنتال)": {
+            "total_amount": 500, "ampoule_ml": 20, "default_dose": 4.0, "unit": "mg",
+            "use": "منوم سريع لإحداث التخدير، ويستخدم أحياناً لحالات جراحات الدماغ (حماية الدماغ).",
+            "onset": "30 ثانية", "duration": "5 - 10 دقائق", "notes": "يحذر استخدامه لمن يعانون من مرض البورفيريا (Porphyria)."
+        }, 
+        "Etomidate (إيتوميدات)": {
+            "total_amount": 20, "ampoule_ml": 10, "default_dose": 0.25, "unit": "mg",
+            "use": "منوم ممتاز وآمن جداً للمرضى الذين يعانون من مشاكل واضطرابات في القلب.",
+            "onset": "30 - 60 ثانية", "duration": "3 - 5 دقائق", "notes": "لا يسبب هبوط بالضغط، لكن قد يسبب رعشة عضلية مؤقتة."
+        },
+        "Ketamine (كيتامين)": {
+            "total_amount": 500, "ampoule_ml": 10, "default_dose": 1.5, "unit": "mg",
+            "use": "تخدير انفصالي (Dissociative)، ممتاز لمرضى الصدمة (Shock) وعمليات الأطفال السريعة وحالات الربو.",
+            "onset": "45 - 60 ثانية", "duration": "10 - 20 دقيقة", "notes": "يزيد نبض القلب وضغط الدم، وقد يسبب هلوسة عند الاستيقاظ."
+        },
+        "Midazolam (ميدازولام)": {
+            "total_amount": 15, "ampoule_ml": 3, "default_dose": 0.05, "unit": "mg",
+            "use": "مهدئ ومزيل للقلق (Sedative/Anxiolytic) ومضاد للتقلصات، يستخدم للتحضير قبل العملية.",
+            "onset": "1 - 3 دقائق", "duration": "30 - 60 دقيقة", "notes": متوفر له مضاد لعكس التأثير (Flumazenil).
+        }, 
+        "Fentanyl (فينتانيل)": {
+            "total_amount": 500, "ampoule_ml": 10, "default_dose": 1.5, "unit": "mcg",
+            "use": "مسكن ألم أفيوني قوي جداً (Opioid)، يستخدم للسيطرة على ألم الجراحة وتخدير المجرى.",
+            "onset": "1 - 2 دقائق", "duration": "30 - 60 دقيقة", "notes": "الجرعات العالية قد تسبب توقف تنفس مؤقت وتصلب جدار الصدر (Chest Rigidity)."
+        },
+        "Succinylcholine (سكسنيل كولين)": {
+            "total_amount": 100, "ampoule_ml": 2, "default_dose": 1.0, "unit": "mg",
+            "use": "مرخي عضلات مزيل للقطبية (Depolarizing NMB)، الأسرع لإرخاء العضلات في الطوارئ وRSI.",
+            "onset": "30 - 60 ثانية", "duration": "4 - 6 دقائق", "notes": "ممنوع في حالات الحروق المتقدمة وتلف الأنسجة وإصابات العضلات المزمنة."
+        }, 
+        "Rocuronium (روكورونيوم)": {
+            "total_amount": 50, "ampoule_ml": 5, "default_dose": 0.6, "unit": "mg",
+            "use": "مرخي عضلات غير مزيل للقطبية، يستخدم للتنبيب العادي والسريع.",
+            "onset": "60 - 90 ثانية", "duration": "30 - 40 دقيقة", "notes": "يعتبر الخيار البديل الممتاز للسكسنيل كولين."
+        },
+        "Atracurium (أتراكوريوم)": {
+            "total_amount": 50, "ampoule_ml": 5, "default_dose": 0.5, "unit": "mg",
+            "use": "مرخي عضلات غير مزيل للقطبية، ممتاز للمرضى الذين لديهم مشاكل بالكلى أو الكبد.",
+            "onset": "2 - 3 دقائق", "duration": "20 - 35 دقيقة", "notes": "قد يسبب تحرير الهيستامين واحمرار خفيف بالجلد."
+        }
     }
 
-    selected_drug = st.selectbox("اختر الدواء:", list(drugs_db.keys()))
+    selected_drug = st.selectbox("اختر الدواء للاطلاع على بطاقته وحساب جرعته:", list(drugs_db.keys()))
     drug_info = drugs_db[selected_drug]
     is_mcg = drug_info["unit"] == "mcg"
     unit_str = "ميكروغرام (mcg)" if is_mcg else "ملغم (mg)"
+
+    # عرض البطاقة الطبية السريعة
+    st.markdown(f'''
+    <div class="card-box">
+        📖 <b>بطاقة معلومات الدواء:</b><br>
+        • <b>الاستخدام الطبي:</b> {drug_info['use']}<br>
+        • <b>بداية التأثير (Onset):</b> {drug_info['onset']} | <b>المدة (Duration):</b> {drug_info['duration']}<br>
+        • <b>ملاحظات سريرية:</b> {drug_info['notes']}
+    </div>
+    ''', unsafe_allow_html=True)
 
     st.markdown(f'''
     <div class="info-box">
@@ -136,15 +182,18 @@ with tab3:
     st.markdown('''
     <div class="danger-box">
         <b>1. Ephedrine (إيفيدرين)</b><br>
-        • اسحب 1ml وضيف 9ml سلاين = التركيز (5mg / ml).<br>
-        • الجرعة: 1 إلى 2 ml حسب الاستجابة لرفع الضغط.
+        • الاستخدام: لرفع ضغط الدم الهابط أثناء التخدير.<br>
+        • التخفيف: اسحب 1ml وضيف 9ml سلاين = التركيز (5mg / ml).<br>
+        • الجرعة: 1 إلى 2 ml حسب الاستجابة.
     </div>
     <div class="warning-box">
         <b>2. Atropine (أتروبين)</b><br>
-        • الجرعة للبالغين: 0.5mg كل 3-5 دقائق لعلاج البطء القلبي.
+        • الاستخدام: لعلاج البطء القلبي الشديد (Bradycardia).<br>
+        • الجرعة للبالغين: 0.5mg كل 3-5 دقائق.
     </div>
     <div class="danger-box">
         <b>3. Adrenaline (أدرينالين)</b><br>
+        • الاستخدام: صدمة الحساسية أو توقف القلب.<br>
         • طوارئ عادية: يخفف إلى 10ml (100mcg/ml).<br>
         • إنعاش قلبي (CPR): 1mg كامل بدون تخفيف.
     </div>
