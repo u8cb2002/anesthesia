@@ -1,6 +1,6 @@
 import streamlit as st
 from PIL import Image
-from google import genai
+import google.generativeai as genai
 
 st.set_page_config(page_title="المساعد الشامل للتخدير 💉", page_icon="👨‍⚕️", layout="centered")
 
@@ -384,8 +384,10 @@ with tab8:
             st.warning("الرجاء كتابة سؤال أو رفع صورة على الأقل.")
         else:
             try:
-                # استخدام حزمة google-genai الحديثة
-                client = genai.Client(api_key=api_key_input)
+                genai.configure(api_key=api_key_input)
+                
+                # إسناد أحدث نموذج مجاني متاح حالياً ومستقر بجميع المفاتيح
+                model = genai.GenerativeModel('gemini-2.0-flash')
 
                 system_instruction = (
                     "أنت مساعد ذكي ومحترف متخصص حصراً في مجال التخدير، العناية المركزة، والإنعاش الطبي. "
@@ -394,15 +396,12 @@ with tab8:
                     "دائماً أضف تنبيه في نهاية إجابتك بأن هذه المعلومات تعليمية ومساعدة وليست بديلاً عن القرار السريري الطبي المباشر."
                 )
 
-                contents = [system_instruction, f"سؤال المستخدم: {user_query}"]
+                prompt_parts = [system_instruction, f"سؤال المستخدم: {user_query}"]
                 if uploaded_image is not None:
-                    contents.append(image)
+                    prompt_parts.append(image)
 
                 with st.spinner("جاري تحليل الطلب بواسطة الذكاء الاصطناعي..."):
-                    response = client.models.generate_content(
-                        model='gemini-2.5-flash',
-                        contents=contents,
-                    )
+                    response = model.generate_content(prompt_parts)
                     st.markdown("### 💡 الإجابة والتحليل:")
                     st.success(response.text)
 
