@@ -89,7 +89,7 @@ with tab2:
         "Propofol (بروبوفول)": {
             "total_amount": 200, "ampoule_ml": 20, "default_dose": 2.0, "unit": "mg",
             "use": "منوم ومنجم أساسي لإحداث التخدير (Induction) والحفاظ عليه، ويستخدم في العمليات العامة واليومية.",
-            "onset": "30 - 45 ثانية", "duration": "5 - 10 دقائق", "notes": "يسبب هبوط في ضغط الدم وتوسع血管 وتثبيط التنفس."
+            "onset": "30 - 45 ثانية", "duration": "5 - 10 دقائق", "notes": "يسبب هبوط في ضغط الدم وتوسع الأوعية وتثبيط التنفس."
         },
         "Thiopental (ثيوبنتال)": {
             "total_amount": 500, "ampoule_ml": 20, "default_dose": 4.0, "unit": "mg",
@@ -109,7 +109,7 @@ with tab2:
         "Midazolam (ميدازولام)": {
             "total_amount": 15, "ampoule_ml": 3, "default_dose": 0.05, "unit": "mg",
             "use": "مهدئ ومزيل للقلق (Sedative/Anxiolytic) ومضاد للتقلصات، يستخدم للتحضير قبل العملية.",
-            "onset": "1 - 3 دقائق", "duration": "30 - 60 دقيقة", "notes": متوفر له مضاد لعكس التأثير (Flumazenil).
+            "onset": "1 - 3 دقائق", "duration": "30 - 60 دقيقة", "notes": "متوفر له مضاد لعكس التأثير (Flumazenil)."
         }, 
         "Fentanyl (فينتانيل)": {
             "total_amount": 500, "ampoule_ml": 10, "default_dose": 1.5, "unit": "mcg",
@@ -138,7 +138,6 @@ with tab2:
     is_mcg = drug_info["unit"] == "mcg"
     unit_str = "ميكروغرام (mcg)" if is_mcg else "ملغم (mg)"
 
-    # عرض البطاقة الطبية السريعة
     st.markdown(f'''
     <div class="card-box">
         📖 <b>بطاقة معلومات الدواء:</b><br>
