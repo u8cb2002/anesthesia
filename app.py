@@ -385,8 +385,8 @@ with tab8:
         else:
             try:
                 genai.configure(api_key=api_key_input)
-                # استخدام أحدث نموذج مدعوم ومتاح للمفاتيح الجديدة
-                model = genai.GenerativeModel('gemini-2.0-flash')
+                # استخدام نموذج 3.5-flash أو gemini-flash الخفيف السريع
+                model = genai.GenerativeModel('gemini-3.5-flash')
                 
                 system_instruction = (
                     "أنت مساعد ذكي ومحترف متخصص حصراً في مجال التخدير، العناية المركزة، والإنعاش الطبي. "
