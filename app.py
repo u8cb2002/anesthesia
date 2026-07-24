@@ -384,20 +384,21 @@ with tab8:
             st.warning("الرجاء كتابة سؤال أو رفع صورة على الأقل.")
         else:
             try:
-                # استخدام SDK الحديث للوصول للنماذج الحية المتاحة لمفتاحك تلقائياً
-                client = genai.Client(api_key=api_key_input)
-
-                # استعلام ديناميكي عن النماذج المتاحة في حسابك لتفادي خطأ 404
-                available_models = [m.name for m in client.models.list() if 'generateContent' in m.supported_actions]
+                genai.configure(api_key=api_key_input)
                 
-                # اختيار أحدث نموذج متاح في حسابك مجاناً
-                target_model = None
-                for name in available_models:
-                    if 'flash' in name:
-                        target_model = name
+                # جلب النماذج المتاحة لمفتاحك وتفعيل أحدث نموذج متوفر تلقائياً
+                all_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+                
+                # البحث عن نموذج يعمل
+                selected_model = None
+                for m in all_models:
+                    if 'flash' in m:
+                        selected_model = m
                         break
-                if not target_model and available_models:
-                    target_model = available_models[0]
+                if not selected_model and all_models:
+                    selected_model = all_models[0]
+
+                model = genai.GenerativeModel(selected_model)
 
                 system_instruction = (
                     "أنت مساعد ذكي ومحترف متخصص حصراً في مجال التخدير، العناية المركزة، والإنعاش الطبي. "
@@ -406,20 +407,14 @@ with tab8:
                     "دائماً أضف تنبيه في نهاية إجابتك بأن هذه المعلومات تعليمية ومساعدة وليست بديلاً عن القرار السريري الطبي المباشر."
                 )
 
-                contents = [system_instruction, f"سؤال المستخدم: {user_query}"]
+                prompt_parts = [system_instruction, f"سؤال المستخدم: {user_query}"]
                 if uploaded_image is not None:
-                    contents.append(image)
+                    prompt_parts.append(image)
 
-                with st.spinner("جاري تحليل الطلب بواسطة الذكاء الاصطناعي..."):
-                    response = client.models.generate_content(
-                        model=target_model,
-                        contents=contents,
-                    )
+                with st.spinner(f"جاري التحليل باستخدام ({selected_model})..."):
+                    response = model.generate_content(prompt_parts)
                     st.markdown("### 💡 الإجابة والتحليل:")
                     st.success(response.text)
 
             except Exception as e:
                 st.error(f"حدث خطأ أثناء الاتصال بالذكاء الاصطناعي: {e}")
-
-st.markdown("---")
-st.caption("إخلاء مسؤولية طبية: هذا التطبيق تعليمي ولا يعتبر بديلاً عن القرار السريري في صالة العمليات.")
