@@ -8,6 +8,7 @@ st.markdown('''
 <style>
     .info-box {
         background-color: #e8f4f8;
+        color: #000000;
         padding: 15px;
         border-radius: 10px;
         border-left: 5px solid #2196F3;
@@ -15,6 +16,7 @@ st.markdown('''
     }
     .success-box {
         background-color: #e8f5e9;
+        color: #000000;
         padding: 15px;
         border-radius: 10px;
         border-left: 5px solid #4CAF50;
