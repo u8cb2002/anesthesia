@@ -367,7 +367,6 @@ with tab8:
     st.subheader("🤖 مساعد التخدير الذكي (مدعوم بـ Google Gemini)")
     st.markdown("اسأل عن أي موضوع طبي، أو ارفع صورة (تخطيط قلب، أدوية، شاشة مراقبة) ليتم تحليلها فوراً.")
 
-    # إدخال مفتاح الـ API من قبل المستخدم أو عبر الـ Secrets
     api_key_input = st.text_input("أدخل مفتاح Google Gemini API Key الخاص بك:", type="password")
 
     uploaded_image = st.file_uploader("اختر صورة للتحليل (اختياري - PNG, JPG, JPEG):", type=["png", "jpg", "jpeg"])
@@ -386,10 +385,8 @@ with tab8:
         else:
             try:
                 genai.configure(api_key=api_key_input)
-                # استخدام نموذج يدعم النصوص والصور معاً
                 model = genai.GenerativeModel('gemini-1.5-flash')
                 
-                # توجيه النظام للالتزام بمجال التخدير حصراً
                 system_instruction = (
                     "أنت مساعد ذكي ومحترف متخصص حصراً في مجال التخدير، العناية المركزة، والإنعاش الطبي. "
                     "يجب أن تجيب فقط على الأسئلة والاستفسارات المتعلقة بهذا المجال الطبي والأدوية والعمليات. "
@@ -407,7 +404,7 @@ with tab8:
                     st.success(response.text)
 
             except Exception as e:
-                st.error(f حدث خطأ أثناء الاتصال بالذكاء الاصطناعي: {e}")
+                st.error(f"حدث خطأ أثناء الاتصال بالذكاء الاصطناعي: {e}")
 
 st.markdown("---")
 st.caption("إخلاء مسؤولية طبية: هذا التطبيق تعليمي ولا يعتبر بديلاً عن القرار السريري في صالة العمليات.")
