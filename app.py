@@ -326,7 +326,7 @@ with tab6:
     st.markdown(f'''
     <div class="success-box">
         <b>حجم الدم الكلي التقديري (EBV):</b><br>
-        • {ebv} مل (لحساب الحد الأقص للنزيف المسموح).
+        • {ebv} مل (لحساب الحد الأقصى للنزيف المسموح).
     </div>
     <div class="info-box">
         <b>عمق تثبيت الأنبوب الرغامي:</b><br>
@@ -379,15 +379,27 @@ with tab8:
 
     if st.button("إرسال للمساعد الذكي"):
         if not api_key_input:
-            st.error("الرجاء إدخال مفتاح الـ API الخاص بـ Gemini أولاً.")
+            st.error("الرجاء إدخل مفتاح الـ API الخاص بـ Gemini أولاً.")
         elif not user_query and not uploaded_image:
             st.warning("الرجاء كتابة سؤال أو رفع صورة على الأقل.")
         else:
             try:
                 genai.configure(api_key=api_key_input)
-                # استخدام نموذج 1.5-flash الأقوى والأكثر توافقاً مع واجهة البرمجة
-                model = genai.GenerativeModel('gemini-1.5-flash')
                 
+                # تجربة النماذج المتاحة تلقائياً لتفادي أخطاء 404
+                available_models = ['gemini-1.5-flash-latest', 'gemini-1.5-flash', 'gemini-pro']
+                model = None
+                
+                for model_name in available_models:
+                    try:
+                        model = genai.GenerativeModel(model_name)
+                        break
+                    except:
+                        continue
+                
+                if not model:
+                    model = genai.GenerativeModel('gemini-1.5-flash-latest')
+
                 system_instruction = (
                     "أنت مساعد ذكي ومحترف متخصص حصراً في مجال التخدير، العناية المركزة، والإنعاش الطبي. "
                     "يجب أن تجيب فقط على الأسئلة والاستفسارات المتعلقة بهذا المجال الطبي والأدوية والعمليات. "
